@@ -35,10 +35,11 @@ func ErrorOutput(ui *dialog.Dialog, err string,
 // SuccessOutput gets dialog session and a msg string and height/width
 // It prints out success output inside dialog inforbox.
 func Output(ui *dialog.Dialog, ntype string, msg string, height, widthOffset int) {
-	ui.SetSize(height, len(msg)+widthOffset)
 	if ntype == Notification {
-		ui.Msgbox("\n" + ntype + ": " + msg)
+		ui.SetSize(height,widthOffset)
+		ui.Msgbox(msg)
 	} else {
+		ui.SetSize(height, len(msg)+widthOffset)
 		ui.Msgbox("\n" + ntype + ": " + msg)
 	}
 }
