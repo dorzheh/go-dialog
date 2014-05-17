@@ -5,12 +5,13 @@ package utils
 
 import (
 	"fmt"
-	dialog "github.com/dorzheh/go-dialog"
 	"net"
 	"os"
 	"os/exec"
 	"strings"
 	"time"
+	
+	dialog "github.com/dorzheh/go-dialog"
 )
 
 const (
@@ -32,8 +33,8 @@ func ErrorOutput(ui *dialog.Dialog, err string,
 	os.Exit(1)
 }
 
-// SuccessOutput gets dialog session and a msg string and height/width
-// It prints out success output inside dialog inforbox.
+// Output gets dialog session and a msg string and height/width
+// It prints out appropriate output inside dialog inforbox.
 func Output(ui *dialog.Dialog, ntype string, msg string, height, widthOffset int) {
 	if ntype == Notification {
 		ui.SetSize(height,widthOffset)
