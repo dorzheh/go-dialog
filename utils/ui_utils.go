@@ -173,7 +173,7 @@ func GetPathToFileFromInput(ui *dialog.Dialog, msg string) string {
 // Returns path to directory
 func GetPathToDirFromInput(ui *dialog.Dialog, defaultDir, msg string) string {
 	if !strings.HasSuffix(defaultDir, "/") {
-		defaultDir = defaultDir + "/"
+		defaultDir += "/"
 	}
 	ui.SetSize(7, 75)
 	ui.Msgbox(msg)
