@@ -6,8 +6,6 @@
 // 10/12/2013
 // Adding functionality:
 // - Dselect
-// - RadioListSlice
-// - MenuSlice
 package dialog
 
 import (
@@ -383,21 +381,4 @@ func (d *Dialog) Dselect(dirpath string) string {
 	}
 	command = "dselect"
 	return d.exec(command, false)
-}
-
-func (d *Dialog) RadiolistSlice(listHeight int, tagItemStatus []string) string {
-	d.afterSize = append(d.afterSize, strconv.Itoa(listHeight))
-	for _, param := range tagItemStatus {
-		d.afterSize = append(d.afterSize, param)
-	}
-	return strings.Replace(d.exec("radiolist", true), "\"", "", -1)
-}
-
-func (d *Dialog) MenuSlice(menuHeight int, tagItemList []string) string {
-	d.afterSize = append(d.afterSize, strconv.Itoa(menuHeight))
-	for index, param := range tagItemList {
-		d.afterSize = append(d.afterSize, strconv.Itoa(index+1))
-		d.afterSize = append(d.afterSize, param)
-	}
-	return d.exec("menu", true)
 }
