@@ -10,7 +10,7 @@ import (
 	"os/exec"
 	"strings"
 	"time"
-	
+
 	dialog "github.com/dorzheh/go-dialog"
 )
 
@@ -21,12 +21,16 @@ const (
 	Notification = "NOTIFICATION"
 )
 
+type Ui struct {
+	dialog.Dialog
+}
+
 ///// Functions providing verification services /////
 
 // ErrorOutput gets dialog session , error string and height/width
 // It prints out the error output inside dialog inforbox.
 // The session is terminated with exit 1
-func ErrorOutput(ui *dialog.Dialog, err string,
+func ErrorOutput(ui *Ui, err string,
 	height, widthOffset int) {
 	ui.SetSize(height, len(err)+widthOffset)
 	ui.Infobox("\n" + Error + ": " + err)
@@ -35,9 +39,9 @@ func ErrorOutput(ui *dialog.Dialog, err string,
 
 // Output gets dialog session and a msg string and height/width
 // It prints out appropriate output inside dialog inforbox.
-func Output(ui *dialog.Dialog, ntype string, msg string, height, widthOffset int) {
+func Output(ui *Ui, ntype string, msg string, height, widthOffset int) {
 	if ntype == Notification {
-		ui.SetSize(height,widthOffset)
+		ui.SetSize(height, widthOffset)
 		ui.Msgbox(msg)
 	} else {
 		ui.SetSize(height, len(msg)+widthOffset)
@@ -51,7 +55,7 @@ func Output(ui *dialog.Dialog, ntype string, msg string, height, widthOffset int
 // It gets a dialog session, command to execute,
 // title for progress bar and the time duration
 // Returns error
-func WaitForCmdToFinish(ui *dialog.Dialog, cmd *exec.Cmd,
+func WaitForCmdToFinish(ui *Ui, cmd *exec.Cmd,
 	title string, duration time.Duration) error {
 	// execute the command in a background
 	err := cmd.Start()
@@ -71,7 +75,7 @@ func WaitForCmdToFinish(ui *dialog.Dialog, cmd *exec.Cmd,
 
 // Progress implements a progress bar
 // Returns error or nil
-func Progress(ui *dialog.Dialog, title, pbMsg string,
+func Progress(ui *Ui, title, pbMsg string,
 	duration time.Duration, step int, done chan error) error {
 	defaultWidth := 50
 	titleWidth := len(title) + 4
@@ -121,7 +125,7 @@ func Progress(ui *dialog.Dialog, title, pbMsg string,
 
 // WaitForFuncToFinish communicates with a progress bar while a given function is executed
 // Returns error or nil
-func WaitForFuncToFinish(ui *dialog.Dialog, done chan error) error {
+func WaitForFuncToFinish(ui *Ui, done chan error) error {
 	defaultWidth := 50
 	titleWidth := 10 //len(*title) + 4
 	msgWidth := 20   //len(*pbMsg) + 4
@@ -151,7 +155,7 @@ func WaitForFuncToFinish(ui *dialog.Dialog, done chan error) error {
 
 // GetPathToFileFromInput uses a dialog session for getting path to a file to upload
 // Returns path to the file
-func GetPathToFileFromInput(ui *dialog.Dialog, msg string) string {
+func GetPathToFileFromInput(ui *Ui, msg string) string {
 	ui.SetSize(7, 60)
 	ui.Msgbox(msg)
 	var result string
@@ -171,7 +175,7 @@ func GetPathToFileFromInput(ui *dialog.Dialog, msg string) string {
 
 // GetPathToDirFromInput uses a dialog session for getting path to a directory to upload
 // Returns path to directory
-func GetPathToDirFromInput(ui *dialog.Dialog, defaultDir, msg string) string {
+func GetPathToDirFromInput(ui *Ui, defaultDir, msg string) string {
 	if !strings.HasSuffix(defaultDir, "/") {
 		defaultDir += "/"
 	}
@@ -194,7 +198,7 @@ func GetPathToDirFromInput(ui *dialog.Dialog, defaultDir, msg string) string {
 
 // GetIpFromInput uses a dialog session for reading IP from user input
 // Returns host IP (remote or local)
-func GetIpFromInput(ui *dialog.Dialog, labelMsg string) string {
+func GetIpFromInput(ui *Ui, labelMsg string) string {
 	var ipAddr string
 	width := len(labelMsg) + 5
 	for {
@@ -214,7 +218,7 @@ func GetIpFromInput(ui *dialog.Dialog, labelMsg string) string {
 
 // GetFromInput uses a dialog session for reading from stdin
 // Returns user input
-func GetFromInput(ui *dialog.Dialog, labelMsg string, defaultInput string) string {
+func GetFromInput(ui *Ui, labelMsg string, defaultInput string) string {
 	var input string
 	width := len(labelMsg) + 5
 	for {
@@ -230,7 +234,7 @@ func GetFromInput(ui *dialog.Dialog, labelMsg string, defaultInput string) strin
 
 //GetPasswordFromInput uses a dialog session for reading user password from user input
 //Returns password string
-func GetPasswordFromInput(ui *dialog.Dialog, host, user string) string {
+func GetPasswordFromInput(ui *Ui, host, user string) string {
 	var passwd1 string
 	var passwd2 string
 	for {
