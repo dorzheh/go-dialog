@@ -125,7 +125,7 @@ func (ui *DialogUi) Progress(title, pbMsg string, duration time.Duration, step i
 
 // WaitForFuncToFinish communicates with a progress bar while a given function is executed
 // Returns error or nil
-func (ui *DialogUi) WaitForFuncToFinish(title, msg string, done chan error) error {
+func (ui *DialogUi) WaitForFuncToFinish(title, msg string, pause time.Duration, done chan error) error {
 	defaultWidth := 50
 	titleWidth := len(title) + 4
 	msgWidth := len(msg) + 4
@@ -140,7 +140,6 @@ func (ui *DialogUi) WaitForFuncToFinish(title, msg string, done chan error) erro
 	}
 	ui.SetTitle(title)
 	ui.SetSize(8, 40)
-	pause, _ := time.ParseDuration("100ms")
 	for {
 		select {
 		// wait for result
