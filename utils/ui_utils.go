@@ -21,8 +21,12 @@ const (
 	Notification = "NOTIFICATION"
 )
 
-type Ui struct {
-	dialog.Dialog
+type DialogUi struct {
+	*dialog.Dialog
+}
+
+func NewDialogUi(environment string, parentId int) *DialogUi {
+	return &DialogUi{dialog.New(environment, parentId)}
 }
 
 ///// Functions providing verification services /////
@@ -30,8 +34,7 @@ type Ui struct {
 // ErrorOutput gets dialog session , error string and height/width
 // It prints out the error output inside dialog inforbox.
 // The session is terminated with exit 1
-func ErrorOutput(ui *Ui, err string,
-	height, widthOffset int) {
+func (ui *DialogUi) ErrorOutput(err string, height, widthOffset int) {
 	ui.SetSize(height, len(err)+widthOffset)
 	ui.Infobox("\n" + Error + ": " + err)
 	os.Exit(1)
@@ -39,7 +42,7 @@ func ErrorOutput(ui *Ui, err string,
 
 // Output gets dialog session and a msg string and height/width
 // It prints out appropriate output inside dialog inforbox.
-func Output(ui *Ui, ntype string, msg string, height, widthOffset int) {
+func (ui *DialogUi) Output(ntype string, msg string, height, widthOffset int) {
 	if ntype == Notification {
 		ui.SetSize(height, widthOffset)
 		ui.Msgbox(msg)
@@ -55,8 +58,7 @@ func Output(ui *Ui, ntype string, msg string, height, widthOffset int) {
 // It gets a dialog session, command to execute,
 // title for progress bar and the time duration
 // Returns error
-func WaitForCmdToFinish(ui *Ui, cmd *exec.Cmd,
-	title string, duration time.Duration) error {
+func (ui *DialogUi) WaitForCmdToFinish(cmd *exec.Cmd, title, msg string, step int, duration time.Duration) error {
 	// execute the command in a background
 	err := cmd.Start()
 	if err != nil {
@@ -69,14 +71,12 @@ func WaitForCmdToFinish(ui *Ui, cmd *exec.Cmd,
 		done <- cmd.Wait()
 	}()
 	// show progress bar for a while
-	//return Progress(ui, title, duration, done)
-	return nil
+	return ui.Progress(title, msg, duration, step, done)
 }
 
 // Progress implements a progress bar
 // Returns error or nil
-func Progress(ui *Ui, title, pbMsg string,
-	duration time.Duration, step int, done chan error) error {
+func (ui *DialogUi) Progress(title, pbMsg string, duration time.Duration, step int, done chan error) error {
 	defaultWidth := 50
 	titleWidth := len(title) + 4
 	msgWidth := len(pbMsg) + 4
@@ -125,10 +125,10 @@ func Progress(ui *Ui, title, pbMsg string,
 
 // WaitForFuncToFinish communicates with a progress bar while a given function is executed
 // Returns error or nil
-func WaitForFuncToFinish(ui *Ui, done chan error) error {
+func (ui *DialogUi) WaitForFuncToFinish(title, msg string, done chan error) error {
 	defaultWidth := 50
-	titleWidth := 10 //len(*title) + 4
-	msgWidth := 20   //len(*pbMsg) + 4
+	titleWidth := len(title) + 4
+	msgWidth := len(msg) + 4
 	var newWidth int
 	if titleWidth > msgWidth {
 		newWidth = titleWidth
@@ -138,7 +138,7 @@ func WaitForFuncToFinish(ui *Ui, done chan error) error {
 	if defaultWidth > newWidth {
 		newWidth = defaultWidth
 	}
-	ui.SetTitle("Releasing the image.Please wait...")
+	ui.SetTitle(title)
 	ui.SetSize(8, 40)
 	pause, _ := time.ParseDuration("100ms")
 	for {
@@ -155,7 +155,7 @@ func WaitForFuncToFinish(ui *Ui, done chan error) error {
 
 // GetPathToFileFromInput uses a dialog session for getting path to a file to upload
 // Returns path to the file
-func GetPathToFileFromInput(ui *Ui, msg string) string {
+func (ui *DialogUi) GetPathToFileFromInput(msg string) string {
 	ui.SetSize(7, 60)
 	ui.Msgbox(msg)
 	var result string
@@ -175,7 +175,7 @@ func GetPathToFileFromInput(ui *Ui, msg string) string {
 
 // GetPathToDirFromInput uses a dialog session for getting path to a directory to upload
 // Returns path to directory
-func GetPathToDirFromInput(ui *Ui, defaultDir, msg string) string {
+func (ui *DialogUi) GetPathToDirFromInput(defaultDir, msg string) string {
 	if !strings.HasSuffix(defaultDir, "/") {
 		defaultDir += "/"
 	}
@@ -198,7 +198,7 @@ func GetPathToDirFromInput(ui *Ui, defaultDir, msg string) string {
 
 // GetIpFromInput uses a dialog session for reading IP from user input
 // Returns host IP (remote or local)
-func GetIpFromInput(ui *Ui, labelMsg string) string {
+func (ui *DialogUi) GetIpFromInput(labelMsg string) string {
 	var ipAddr string
 	width := len(labelMsg) + 5
 	for {
@@ -218,7 +218,7 @@ func GetIpFromInput(ui *Ui, labelMsg string) string {
 
 // GetFromInput uses a dialog session for reading from stdin
 // Returns user input
-func GetFromInput(ui *Ui, labelMsg string, defaultInput string) string {
+func (ui *DialogUi) GetFromInput(labelMsg string, defaultInput string) string {
 	var input string
 	width := len(labelMsg) + 5
 	for {
@@ -234,7 +234,7 @@ func GetFromInput(ui *Ui, labelMsg string, defaultInput string) string {
 
 //GetPasswordFromInput uses a dialog session for reading user password from user input
 //Returns password string
-func GetPasswordFromInput(ui *Ui, host, user string) string {
+func (ui *DialogUi) GetPasswordFromInput(host, user string) string {
 	var passwd1 string
 	var passwd2 string
 	for {
