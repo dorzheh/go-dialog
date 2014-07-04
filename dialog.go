@@ -129,7 +129,6 @@ func (d *Dialog) exec(dType string, allowLabel bool) string {
 		cmd.Args = append(cmd.Args, "--attach")
 		cmd.Args = append(cmd.Args, strconv.Itoa(d.parentId))
 	}
-	fmt.Println(cmd.Args)
 	var out bytes.Buffer
 	cmd.Stdout = &out
 	cmd.Run()
