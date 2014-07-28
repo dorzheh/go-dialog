@@ -6,6 +6,10 @@
 // 10/12/2013
 // Adding functionality:
 // - Dselect
+// 28/07/2014
+// - adding execWithError which is almost identical to exec but returning
+//   error from cmd.Run()
+// - adding Yesno assuming to return either true or false
 package dialog
 
 import (
@@ -134,6 +138,45 @@ func (d *Dialog) exec(dType string, allowLabel bool) string {
 	cmd.Run()
 	d.reset()
 	return strings.Trim(out.String(), "\r\n ")
+}
+
+/* ============================================================================================ */
+func (d *Dialog) execWithError(dType string, allowLabel bool) (string, error) {
+	var arg string
+	cmd := exec.Command(d.environment)
+	cmd.Args = append(cmd.Args, "--"+dType)
+
+	if allowLabel == true {
+		cmd.Args = append(cmd.Args, d.label)
+	}
+
+	for _, arg = range d.beforeSize {
+		cmd.Args = append(cmd.Args, arg)
+	}
+
+	if d.environment != KDE {
+		cmd.Args = append(cmd.Args, strconv.Itoa(d.height))
+		cmd.Args = append(cmd.Args, strconv.Itoa(d.width))
+	}
+
+	for _, arg = range d.afterSize {
+		cmd.Args = append(cmd.Args, arg)
+	}
+
+	cmd.Args = append(cmd.Args, "--title")
+	cmd.Args = append(cmd.Args, d.title)
+
+	if d.environment == CONSOLE {
+		cmd.Args = append(cmd.Args, "--stdout")
+	} else {
+		cmd.Args = append(cmd.Args, "--attach")
+		cmd.Args = append(cmd.Args, strconv.Itoa(d.parentId))
+	}
+	var out bytes.Buffer
+	cmd.Stdout = &out
+	err := cmd.Run()
+	d.reset()
+	return strings.Trim(out.String(), "\r\n "), err
 }
 
 /* ============================================================================================ */
@@ -312,9 +355,13 @@ func (d *Dialog) Timebox(date time.Time) string {
 }
 
 /* ============================================================================================ */
-func (d *Dialog) Yesno() string {
-	// @TODO Почему-то ничего не возвращает :(
-	return d.exec("yesno", true)
+func (d *Dialog) Yesno() bool {
+	if _, err := d.execWithError("yesno", true); err != nil {
+		if err.Error() == "exit status 1" {
+			return false
+		}
+	}
+	return true
 }
 
 /* ============================================================================================ */
