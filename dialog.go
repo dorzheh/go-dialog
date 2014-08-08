@@ -133,7 +133,6 @@ func (d *Dialog) exec(dType string, allowLabel bool) string {
 	}
 	var out bytes.Buffer
 	cmd.Stdout = &out
-	fmt.Printf("DDDDD%v\n", cmd.Args)
 	cmd.Run()
 	d.reset()
 	return strings.Trim(out.String(), "\r\n ")
