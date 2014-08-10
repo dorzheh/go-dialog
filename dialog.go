@@ -38,6 +38,8 @@ type Dialog struct {
 	width       int
 	left        int
 	top         int
+	shadow      bool
+	cancelLabel string
 	beforeSize  []string
 	afterSize   []string
 }
@@ -74,6 +76,14 @@ func New(environment string, parentId int) *Dialog {
 	return res
 }
 
+func (d *Dialog) Shadow(truefalse bool) {
+	d.shadow = truefalse
+}
+
+func (d *Dialog) SetCancelLabel(label string) {
+	d.cancelLabel = label
+}
+
 func (d *Dialog) SetSize(height int, width int) {
 	d.height = height
 	d.width = width
@@ -92,9 +102,9 @@ func (d *Dialog) SetLabel(label string) {
 }
 
 func (d *Dialog) reset() {
-	d.SetTitle("")
-	d.SetBackTitle("")
-	d.SetLabel("")
+	d.title = ""
+	d.backtitle = ""
+	d.label = ""
 	d.SetSize(0, 0)
 	d.afterSize = []string{}
 	d.beforeSize = []string{}
@@ -104,12 +114,16 @@ func (d *Dialog) exec(dType string, allowLabel bool) string {
 	var arg string
 	cmd := exec.Command(d.environment)
 
+	if d.shadow == false {
+		cmd.Args = append(cmd.Args, "--no-shadow")
+	}
 	if d.backtitle != "" {
-		cmd.Args = append(cmd.Args, "--backtitle")
-		cmd.Args = append(cmd.Args, d.backtitle)
+		cmd.Args = append(cmd.Args, "--backtitle", d.backtitle)
 	}
 
-	cmd.Args = append(cmd.Args, "--cancel-label", "Exit")
+	if d.cancelLabel != "" {
+		cmd.Args = append(cmd.Args, "--cancel-label", d.cancelLabel)
+	}
 	cmd.Args = append(cmd.Args, "--"+dType)
 
 	if allowLabel == true {
@@ -126,8 +140,7 @@ func (d *Dialog) exec(dType string, allowLabel bool) string {
 		cmd.Args = append(cmd.Args, arg)
 	}
 
-	cmd.Args = append(cmd.Args, "--title")
-	cmd.Args = append(cmd.Args, d.title)
+	cmd.Args = append(cmd.Args, "--title", d.title)
 
 	if d.environment == CONSOLE {
 		cmd.Args = append(cmd.Args, "--stdout")
@@ -149,6 +162,16 @@ func (d *Dialog) exec(dType string, allowLabel bool) string {
 func (d *Dialog) execWithError(dType string, allowLabel bool) (string, error) {
 	var arg string
 	cmd := exec.Command(d.environment)
+
+	if d.shadow == false {
+		cmd.Args = append(cmd.Args, "--no-shadow")
+	}
+	if d.backtitle != "" {
+		cmd.Args = append(cmd.Args, "--backtitle", d.backtitle)
+	}
+	if d.cancelLabel != "" {
+		cmd.Args = append(cmd.Args, "--cancel-label", d.cancelLabel)
+	}
 	cmd.Args = append(cmd.Args, "--"+dType)
 
 	if allowLabel == true {
@@ -168,8 +191,7 @@ func (d *Dialog) execWithError(dType string, allowLabel bool) (string, error) {
 		cmd.Args = append(cmd.Args, arg)
 	}
 
-	cmd.Args = append(cmd.Args, "--title")
-	cmd.Args = append(cmd.Args, d.title)
+	cmd.Args = append(cmd.Args, "--title", d.title)
 
 	if d.environment == CONSOLE {
 		cmd.Args = append(cmd.Args, "--stdout")
