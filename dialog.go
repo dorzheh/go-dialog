@@ -9,6 +9,7 @@ package dialog
 
 import (
 	"bytes"
+	"errors"
 	"fmt"
 	"os"
 	"os/exec"
@@ -24,6 +25,8 @@ const (
 	X       = "Xdialog"
 	AUTO    = "auto"
 )
+
+var exit = errors.New("exit status 1")
 
 type Dialog struct {
 	environment string
@@ -106,6 +109,7 @@ func (d *Dialog) exec(dType string, allowLabel bool) string {
 		cmd.Args = append(cmd.Args, d.backtitle)
 	}
 
+	cmd.Args = append(cmd.Args, "--cancel-label", "Exit")
 	cmd.Args = append(cmd.Args, "--"+dType)
 
 	if allowLabel == true {
@@ -133,7 +137,11 @@ func (d *Dialog) exec(dType string, allowLabel bool) string {
 	}
 	var out bytes.Buffer
 	cmd.Stdout = &out
-	cmd.Run()
+	if err := cmd.Run(); err != nil {
+		if err.Error() == exit.Error() {
+			os.Exit(0)
+		}
+	}
 	d.reset()
 	return strings.Trim(out.String(), "\r\n ")
 }
