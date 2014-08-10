@@ -13,7 +13,8 @@ func main() {
 	//var d = dialog.New(dialog.GTK, 0)
 	//var d = dialog.New(dialog.X, 0)
 	//var d = dialog.New(dialog.AUTO, 0)
-
+	d.SetBackTitle("test")
+	d.SetTitle("test")
 	//res := d.Calendar(time.Now())
 	//fmt.Println(res)
 
