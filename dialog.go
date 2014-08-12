@@ -396,6 +396,7 @@ type progress struct {
 	environment string
 	label       string
 	title       string
+	shadow      bool
 	height      int
 	width       int
 }
@@ -407,12 +408,19 @@ func (d *Dialog) Progressbar() *progress {
 		out, _ = exec.Command("kdialog", "--progressbar", "Initializing", "100", "--title", d.title).Output()
 		id = strings.Split(strings.Trim(string(out), " \n\r"), " ")
 	} else {
-		exec.Command(d.environment, "--title", d.title, "--gauge", d.label, strconv.Itoa(d.height), strconv.Itoa(d.width), "0", "--stdout").Run()
+		cmd := exec.Command(d.environment)
+		if d.shadow == false {
+			cmd.Args = append(cmd.Args, "--no-shadow")
+		}
+
+		cmd.Args = append(cmd.Args, "--title", d.title, "--gauge", d.label, strconv.Itoa(d.height), strconv.Itoa(d.width), "0", "--stdout")
+		cmd.Run()
 	}
 	var res = new(progress)
 	res.id = id
 	res.label = d.label
 	res.environment = d.environment
+	res.shadow = d.shadow
 	res.height = d.height
 	res.width = d.width
 	res.title = d.title
@@ -427,7 +435,13 @@ func (p *progress) Step(percent int, newLabel string) {
 		exec.Command("qdbus", p.id[0], p.id[1], "setLabelText", newLabel).Run()
 		exec.Command("qdbus", p.id[0], p.id[1], "Set", "", "value", strconv.Itoa(percent)).Run()
 	} else {
-		exec.Command(p.environment, "--title", p.title, "--gauge", newLabel, strconv.Itoa(p.height), strconv.Itoa(p.width), strconv.Itoa(percent), "--stdout").Run()
+		cmd := exec.Command(p.environment)
+		if p.shadow == false {
+			cmd.Args = append(cmd.Args, "--no-shadow")
+		}
+
+		cmd.Args = append(cmd.Args, "--title", p.title, "--gauge", newLabel, strconv.Itoa(p.height), strconv.Itoa(p.width), strconv.Itoa(percent), "--stdout")
+		cmd.Run()
 	}
 }
 
