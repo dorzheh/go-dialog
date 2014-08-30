@@ -40,6 +40,7 @@ type Dialog struct {
 	top         int
 	shadow      bool
 	cancelLabel string
+	beforeDtype []string
 	beforeSize  []string
 	afterSize   []string
 }
@@ -106,6 +107,7 @@ func (d *Dialog) reset() {
 	d.backtitle = ""
 	d.label = ""
 	d.SetSize(0, 0)
+	d.beforeDtype = []string{}
 	d.afterSize = []string{}
 	d.beforeSize = []string{}
 }
@@ -120,9 +122,11 @@ func (d *Dialog) exec(dType string, allowLabel bool) string {
 	if d.backtitle != "" {
 		cmd.Args = append(cmd.Args, "--backtitle", d.backtitle)
 	}
-
 	if d.cancelLabel != "" {
 		cmd.Args = append(cmd.Args, "--cancel-label", d.cancelLabel)
+	}
+	for _, arg := range d.beforeDtype {
+		cmd.Args = append(cmd.Args, arg)
 	}
 	cmd.Args = append(cmd.Args, "--"+dType)
 
@@ -172,6 +176,9 @@ func (d *Dialog) execWithError(dType string, allowLabel bool) (string, error) {
 	if d.cancelLabel != "" {
 		cmd.Args = append(cmd.Args, "--cancel-label", d.cancelLabel)
 	}
+	for _, arg := range d.beforeDtype {
+		cmd.Args = append(cmd.Args, arg)
+	}
 	cmd.Args = append(cmd.Args, "--"+dType)
 
 	if allowLabel == true {
@@ -199,6 +206,7 @@ func (d *Dialog) execWithError(dType string, allowLabel bool) (string, error) {
 		cmd.Args = append(cmd.Args, "--attach")
 		cmd.Args = append(cmd.Args, strconv.Itoa(d.parentId))
 	}
+
 	var out bytes.Buffer
 	cmd.Stdout = &out
 	err := cmd.Run()
@@ -323,11 +331,14 @@ func (d *Dialog) Msgbox(text string) {
 	d.exec("msgbox", false)
 }
 
-func (d *Dialog) Passwordbox() string {
+func (d *Dialog) Passwordbox(insecure bool) string {
 	var command string
 	if d.environment == KDE {
 		command = "password"
 	} else {
+		if insecure {
+			d.beforeDtype = append(d.beforeDtype, "--insecure")
+		}
 		d.afterSize = append(d.afterSize, "")
 		command = "passwordbox"
 	}
