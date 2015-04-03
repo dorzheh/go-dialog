@@ -116,7 +116,6 @@ func (d *Dialog) reset() {
 	d.title = ""
 	d.backtitle = ""
 	d.label = ""
-	d.cancelLabel = ""
 	d.okLabel = "OK"
 	d.extraLabel = ""
 	d.SetSize(0, 0)
