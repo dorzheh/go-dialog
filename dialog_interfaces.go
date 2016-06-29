@@ -36,19 +36,19 @@ type DialogIface interface {
 	// Combobox(item ...string) (string, error)
 	// Calendar(date time.Time) (string, error)
 	// Checklist(listHeight int, tagItemStatus ...string) ([]string, error)
-	Mixedform(title string, insecure bool, tagItemStatus ...string) ([]string, error)
-	Fselect(filepath string) (string, error)
-	Infobox(text string)
-	Inputbox(value string) (string, error)
-	Inputmenu(menuHeight int, tagItem ...string) ([]string, error)
-	Menu(menuHeight int, tagItem ...string) (string, error)
-	Msgbox(text string)
-	Passwordbox(insecure bool) (string, error)
-	Pause(seconds int)
-	Textbox(filepath string) error
-	Timebox(date time.Time) (string, error)
-	Yesno() bool
-	Radiolist(listHeight int, tagItemStatus ...string) (string, error)
-	// Dselect(dirpath string) (string, error)
-	Progressbar() ProgressIface
+	// Mixedform(title string, insecure bool, tagItemStatus ...string) ([]string, error)
+	// Fselect(filepath string) (string, error)
+	// Infobox(text string)
+	// Inputbox(value string) (string, error)
+	// Inputmenu(menuHeight int, tagItem ...string) ([]string, error)
+	// Menu(menuHeight int, tagItem ...string) (string, error)
+	// Msgbox(text string)
+	// Passwordbox(insecure bool) (string, error)
+	// Pause(seconds int)
+	// Textbox(filepath string) error
+	// Timebox(date time.Time) (string, error)
+	// Yesno() bool
+	// Radiolist(listHeight int, tagItemStatus ...string) (string, error)
+	// // Dselect(dirpath string) (string, error)
+	// Progressbar() ProgressIface
 }
