@@ -9,7 +9,7 @@ import (
 )
 
 func NewTestDialog(environment string, parentId int) godialog.DialogIface {
-	var err error
+	// var err error
 	var res = new(godialog.Dialog)
 	// if environment == AUTO || environment == "" {
 	// 	for _, pkg := range []string{KDE, GTK, X, CONSOLE} {

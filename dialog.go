@@ -22,6 +22,7 @@ const (
 	KDE     = "kdialog"
 	GTK     = "gtkdialog"
 	X       = "Xdialog"
+	TEST    = "test"
 	AUTO    = "auto"
 )
 
@@ -50,10 +51,48 @@ type Dialog struct {
 	beforeDtype []string
 	beforeSize  []string
 	afterSize   []string
+	lastCmd     []string
+}
+
+//func New(environment string, parentId int) *Dialog {
+func New(environment string, parentId int) DialogIface {
+	var err error
+	var res = new(Dialog)
+	if environment == AUTO || environment == "" {
+		for _, pkg := range []string{KDE, GTK, X, CONSOLE} {
+			_, err = exec.LookPath(pkg)
+			if err == nil {
+				res.environment = pkg
+				break
+			}
+		}
+		if res.environment == "" {
+			fmt.Println("Package not found!\nPlease install " + KDE + " or " + GTK + " or " + X + " or " + CONSOLE)
+		}
+	} else {
+		_, err = exec.LookPath(environment)
+		if err == nil {
+			res.environment = environment
+		} else {
+			fmt.Println("Package not found!\nPlease install " + environment)
+		}
+	}
+
+	if res.environment == "" {
+		os.Exit(1)
+	}
+
+	res.parentId = parentId
+	res.reset()
+	return res
 }
 
 func (d *Dialog) Shadow(truefalse bool) {
 	d.shadow = truefalse
+}
+
+func (d *Dialog) LastCMD() []string {
+	return d.lastCmd
 }
 
 func (d *Dialog) SetCancelLabel(label string) {
@@ -163,7 +202,11 @@ func (d *Dialog) exec(dType string, allowLabel bool) (string, error) {
 
 	var out bytes.Buffer
 	cmd.Stdout = &out
-	err := cmd.Run()
+	var err error
+	if res.environment != TEST {
+		err = cmd.Run()
+	}
+	d.lastCmd = cmd.Args
 	d.reset()
 	return strings.Trim(out.String(), "\r\n "), err
 }
@@ -466,37 +509,4 @@ func (p *progress) Close() {
 		exec.Command("qdbus", p.id[0], p.id[1], "close").Run()
 	}
 	p = nil
-}
-
-//func New(environment string, parentId int) *Dialog {
-func New(environment string, parentId int) DialogIface {
-	var err error
-	var res = new(Dialog)
-	if environment == AUTO || environment == "" {
-		for _, pkg := range []string{KDE, GTK, X, CONSOLE} {
-			_, err = exec.LookPath(pkg)
-			if err == nil {
-				res.environment = pkg
-				break
-			}
-		}
-		if res.environment == "" {
-			fmt.Println("Package not found!\nPlease install " + KDE + " or " + GTK + " or " + X + " or " + CONSOLE)
-		}
-	} else {
-		_, err = exec.LookPath(environment)
-		if err == nil {
-			res.environment = environment
-		} else {
-			fmt.Println("Package not found!\nPlease install " + environment)
-		}
-	}
-
-	if res.environment == "" {
-		os.Exit(1)
-	}
-
-	res.parentId = parentId
-	res.reset()
-	return res
 }
