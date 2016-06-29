@@ -4,13 +4,13 @@
 package dialog
 
 import (
-// "bytes"
-// "fmt"
-// "os"
-// "os/exec"
-// "strconv"
-// "strings"
-// "time"
+	// "bytes"
+	// "fmt"
+	// "os"
+	// "os/exec"
+	// "strconv"
+	// "strings"
+	"time"
 )
 
 type ProgressIface interface {
