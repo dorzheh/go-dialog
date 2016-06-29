@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/weldpua2008/go-dialog.svg?branch=master)](https://travis-ci.org/weldpua2008/go-dialog)
+
 go-dialog
 =========
 
