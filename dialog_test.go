@@ -8,7 +8,7 @@ import (
 	"testing"
 )
 
-func NewTestDialog(environment string, parentId int) dialog.DialogIface {
+func NewTestDialog(environment string, parentId int) godialog.DialogIface {
 	var err error
 	var res = new(godialog.Dialog)
 	// if environment == AUTO || environment == "" {
@@ -40,7 +40,7 @@ func NewTestDialog(environment string, parentId int) dialog.DialogIface {
 }
 
 func TestInfoBox(t *testing.T) {
-	d := NewTestDialog(dialog.AUTO, 0)
+	d := NewTestDialog(godialog.AUTO, 0)
 	// res, err := d.Inputbox("Hello world!")
 	// fmt.Println(res, err)
 	res1 := d.Yesno()
