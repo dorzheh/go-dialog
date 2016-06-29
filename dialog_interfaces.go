@@ -19,18 +19,18 @@ type ProgressIface interface {
 }
 
 type DialogIface interface {
-	Shadow(truefalse bool)
-	SetCancelLabel(label string)
-	SetSize(height int, width int)
-	SetTitle(title string)
-	SetBackTitle(backtitle string)
-	SetLabel(label string)
-	SetOkLabel(label string)
-	HelpButton(truefalse bool)
-	SetHelpLabel(label string)
-	SetExtraLabel(label string)
-	Slider(min int, max int, step int) (int, error)
-	Passivepopup(text string, timeout int)
+	// Shadow(truefalse bool)
+	// SetCancelLabel(label string)
+	// SetSize(height int, width int)
+	// SetTitle(title string)
+	// SetBackTitle(backtitle string)
+	// SetLabel(label string)
+	// SetOkLabel(label string)
+	// HelpButton(truefalse bool)
+	// SetHelpLabel(label string)
+	// SetExtraLabel(label string)
+	// Slider(min int, max int, step int) (int, error)
+	// Passivepopup(text string, timeout int)
 	Geticon() string
 	Getcolor() string
 	// Combobox(item ...string) (string, error)
