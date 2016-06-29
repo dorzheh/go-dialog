@@ -1,0 +1,34 @@
+language: go
+
+go:
+  - 1.5
+#  - 1.6
+install:
+# Add Godeps dependencies to GOPATH and PATH
+#  - go get github.com/tools/godep
+#  - godep restore
+#  - go get -t -v ./...
+
+  -  go get "github.com/weldpua2008/go-dialog"
+#  - go get github.com/dorzheh/infra
+#env:
+#  #matrix:
+#  - OS_TYPE=opensuse OS_VERSION=13.2 ANSIBLE_VERSION=1.9.2
+
+branches:
+  only:
+  - master
+#  - stable
+
+#services:
+#  - docker
+#script: go test ./...
+script:
+   - go test ./...
+#  - go build -o example_bin example/myproduct/deployer/deployer.go
+
+
+notifications:
+  email: false
+#  hipchat:
+#    rooms:
