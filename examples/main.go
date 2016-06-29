@@ -1,8 +1,12 @@
+// Copyright 2016 Valeriy Solovyov <weldpua2008@gmail.com>. All rights reserved.
+
+// Copyright 2014-2015 Dmitry Orzhehovsky <dorzheh@gmail.com>
+
 package main
 
 import (
 	"fmt"
-	// "github.com/dorzheh/go-dialog"
+	// "github.com/weldpua2008/go-dialog"
 	//"strconv"
 	//"time"
 )
@@ -12,7 +16,7 @@ import (
 // --textbox /opt/rdwr/dfcc/bin/1  20 80
 
 func main() {
-	// d := dialog.New(dialog.CONSOLE, 0)
+	// d := dialog.New(dialog.AUTO, 0)
 
 	// d.HelpButton(true)
 	// d.SetHelpLabel("Back")
@@ -35,8 +39,8 @@ func main() {
 	// }
 	// p.Close()
 
-	//res, err := d.Inputbox("Hello world!")
-	//fmt.Println(res, err)
+	// res, err := d.Inputbox("Hello world!")
+	// fmt.Println(res, err)
 
 	// res = d.Inputmenu(50, "Tag 1", "Item 1", "Tag 2", "Item 2", "Tag 3", "Item 3")
 	// fmt.Println(res)

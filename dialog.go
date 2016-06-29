@@ -82,7 +82,7 @@ func New(environment string, parentId int) DialogIface {
 
 	res.parentId = parentId
 	res.reset()
-	return res
+	return &res
 }
 
 func (d *Dialog) Shadow(truefalse bool) {
