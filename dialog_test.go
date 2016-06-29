@@ -37,6 +37,7 @@ func TestYesNo(t *testing.T) {
 
 }
 
+// tests for structure changes
 func TestHelpButtonTrue(t *testing.T) {
 	d := NewTestDialogRAW(DIALOG_TEST_ENV, 0)
 	expected_val := true
@@ -45,12 +46,12 @@ func TestHelpButtonTrue(t *testing.T) {
 	if d.helpButton != expected_val {
 		t.Errorf("Expected %v, actual %v ", expected_val, d.helpButton)
 	}
-	x := LastCMD
-	fmt.Sprintf("%v \n", LastCMD)
-	expected_str := "[]"
-	if fmt.Sprintf("%v", x) != expected_str {
-		t.Errorf("Expected %v, actual %v ", expected_str, x)
-	}
+	// x := LastCMD
+	// fmt.Sprintf("%v \n", LastCMD)
+	// expected_str := "[]"
+	// if fmt.Sprintf("%v", x) != expected_str {
+	// 	t.Errorf("Expected %v, actual %v ", expected_str, x)
+	// }
 }
 
 func TestHelpButtonFalse(t *testing.T) {
@@ -61,10 +62,14 @@ func TestHelpButtonFalse(t *testing.T) {
 	if d.helpButton != expected_val {
 		t.Errorf("Expected %v, actual %v ", expected_val, d.helpButton)
 	}
-	x := LastCMD
-	fmt.Sprintf("%v \n", LastCMD)
-	expected_str := "[]"
-	if fmt.Sprintf("%v", x) != expected_str {
-		t.Errorf("Expected %v, actual %v ", expected_str, x)
+}
+
+func TestLabel(t *testing.T) {
+	d := NewTestDialogRAW(DIALOG_TEST_ENV, 0)
+	expected_val := "label"
+	d.SetHelpLabel(expected_val)
+
+	if d.helpLabel != expected_val {
+		t.Errorf("Expected %v, actual %v ", expected_val, d.helpButton)
 	}
 }
