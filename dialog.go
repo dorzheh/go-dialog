@@ -52,7 +52,8 @@ type Dialog struct {
 	afterSize   []string
 }
 
-func New(environment string, parentId int) *Dialog {
+//func New(environment string, parentId int) *Dialog {
+func New(environment string, parentId int) DialogIface {
 	var err error
 	var res = new(Dialog)
 	if environment == AUTO || environment == "" {
@@ -423,7 +424,33 @@ type progress struct {
 	width       int
 }
 
-func (d *Dialog) Progressbar() *progress {
+// func (d *Dialog) Progressbar() *progress {
+// 	var out []byte
+// 	var id []string
+// 	if d.environment == KDE {
+// 		out, _ = exec.Command("kdialog", "--progressbar", "Initializing", "100", "--title", d.title).Output()
+// 		id = strings.Split(strings.Trim(string(out), " \n\r"), " ")
+// 	} else {
+// 		cmd := exec.Command(d.environment)
+// 		if d.shadow == false {
+// 			cmd.Args = append(cmd.Args, "--no-shadow")
+// 		}
+
+// 		cmd.Args = append(cmd.Args, "--title", d.title, "--gauge", d.label, strconv.Itoa(d.height), strconv.Itoa(d.width), "0", "--stdout")
+// 		cmd.Run()
+// 	}
+// 	var res = new(progress)
+// 	res.id = id
+// 	res.label = d.label
+// 	res.environment = d.environment
+// 	res.shadow = d.shadow
+// 	res.height = d.height
+// 	res.width = d.width
+// 	res.title = d.title
+// 	return res
+// }
+
+func (d *Dialog) Progressbar() ProgressIface {
 	var out []byte
 	var id []string
 	if d.environment == KDE {

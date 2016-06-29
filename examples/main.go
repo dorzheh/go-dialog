@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	//"github.com/dorzheh/go-dialog"
+	// "github.com/dorzheh/go-dialog"
 	//"strconv"
 	//"time"
 )
@@ -12,14 +12,14 @@ import (
 // --textbox /opt/rdwr/dfcc/bin/1  20 80
 
 func main() {
-	//d := dialog.New(dialog.CONSOLE, 0)
+	// d := dialog.New(dialog.CONSOLE, 0)
 
-	//d.HelpButton(true)
-	//d.SetHelpLabel("Back")
+	// d.HelpButton(true)
+	// d.SetHelpLabel("Back")
 	// l := []string{"Selection1", "1", "1", "2046", "1", "10", "20", "0", "0", "Selection2", "2", "1", "0", "2", "10", "20", "0", "0", "Selection3", "3", "1", "0", "3", "10", "20", "0", "0"}
 	// res, err := d.Mixedform("Title", l[0:]...)
 
-	//res, err := d.Calendar(time.Now())
+	// res, err := d.Calendar(time.Now())
 
 	// res, err := d.Checklist(0, "Tag 1", "Item 1", "on", "Tag 2", "Item 2", "off", "Tag 3", "Item 3", "off")
 	// fmt.Println(res, err)
