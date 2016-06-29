@@ -32,6 +32,9 @@ const (
 	DIALOG_ERR_EXTRA  = "exit status 3"
 )
 
+var LastCMD []string
+var AllCMD []string
+
 type Dialog struct {
 	environment string
 	parentId    int
@@ -91,9 +94,9 @@ func (d *Dialog) Shadow(truefalse bool) {
 	d.shadow = truefalse
 }
 
-func (d *Dialog) LastCMD() []string {
-	return d.lastCmd
-}
+// func (d *Dialog) LastCMD() []string {
+// 	return d.lastCmd
+// }
 
 func (d *Dialog) SetCancelLabel(label string) {
 	d.cancelLabel = label
@@ -207,6 +210,8 @@ func (d *Dialog) exec(dType string, allowLabel bool) (string, error) {
 		err = cmd.Run()
 	}
 	d.lastCmd = cmd.Args
+	LastCMD = cmd.Args
+
 	d.reset()
 	return strings.Trim(out.String(), "\r\n "), err
 }

@@ -40,9 +40,11 @@ func NewTestDialog(environment string, parentId int) godialog.DialogIface {
 }
 
 func TestInfoBox(t *testing.T) {
-	d := NewTestDialog(godialog.AUTO, 0)
+	d := NewTestDialog(godialog.DIALOG_TEST_ENV, 0)
 	// res, err := d.Inputbox("Hello world!")
 	// fmt.Println(res, err)
 	res1 := d.Yesno()
+	x := godialog.LastCMD
+	fmt.Println("%v", x)
 	fmt.Println("%v", res1)
 }
