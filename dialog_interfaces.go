@@ -34,7 +34,8 @@ type DialogIface interface {
 	Geticon() string
 	Getcolor() string
 	Combobox(item ...string) (string, error)
-	Calendar(date time.Time) (string, error)
+	// Calendar(date time.Time) (string, error)
+	// Calendar(date time.Time) (string, error)
 	Checklist(listHeight int, tagItemStatus ...string) ([]string, error)
 	Mixedform(title string, insecure bool, tagItemStatus ...string) ([]string, error)
 	Fselect(filepath string) (string, error)
