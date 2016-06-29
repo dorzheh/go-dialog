@@ -26,6 +26,6 @@ Installation
 
 Contributors
 =========
-* [Valeriy Soloviov](github.com/weldpua2008/) <weldpua2008 @gmail.com>
-* [Dmitry Orzhehovsky](github.com/dorzheh/) <dorzheh @gmail.com> 
+* [Valeriy Soloviov](http://github.com/weldpua2008/) <weldpua2008 @gmail.com>
+* [Dmitry Orzhehovsky](http://github.com/dorzheh/) <dorzheh @gmail.com> 
 * Pavel Vershinin <master-dev @inbox.ru>
