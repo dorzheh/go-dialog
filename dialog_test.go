@@ -34,7 +34,6 @@ func NewTestDialog(environment string, parentId int) dialog.DialogIface {
 	// if res.environment == "" {
 	// 	os.Exit(1)
 	// }
-
 	// res.parentId = parentId
 	// res.reset()
 	return res
