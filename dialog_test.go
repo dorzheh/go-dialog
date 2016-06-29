@@ -2,49 +2,69 @@ package dialog
 
 import (
 	"fmt"
-	godialog "github.com/weldpua2008/go-dialog"
+	// "github.com/weldpua2008/go-dialog"
 	//"strconv"
 	//"time"
+	// "strings"
+	// "reflect"
 	"testing"
 )
 
-func NewTestDialog(environment string, parentId int) godialog.DialogIface {
-	// var err error
-	var res = new(godialog.Dialog)
-	// if environment == AUTO || environment == "" {
-	// 	for _, pkg := range []string{KDE, GTK, X, CONSOLE} {
-	// 		_, err = exec.LookPath(pkg)
-	// 		if err == nil {
-	// 			res.environment = pkg
-	// 			break
-	// 		}
-	// 	}
-	// 	if res.environment == "" {
-	// 		fmt.Println("Package not found!\nPlease install " + KDE + " or " + GTK + " or " + X + " or " + CONSOLE)
-	// 	}
-	// } else {
-	// 	_, err = exec.LookPath(environment)
-	// 	if err == nil {
-	// 		res.environment = environment
-	// 	} else {
-	// 		fmt.Println("Package not found!\nPlease install " + environment)
-	// 	}
-	// }
-
-	// if res.environment == "" {
-	// 	os.Exit(1)
-	// }
-	// res.parentId = parentId
-	// res.reset()
+func NewTestDialog(environment string, parentId int) DialogIface {
+	var res = new(Dialog)
+	LastCMD = []string{}
 	return res
 }
+func NewTestDialogRAW(environment string, parentId int) Dialog {
+	var res = new(Dialog)
+	LastCMD = []string{}
+	return *res
+}
 
-func TestInfoBox(t *testing.T) {
-	d := NewTestDialog(godialog.DIALOG_TEST_ENV, 0)
-	// res, err := d.Inputbox("Hello world!")
-	// fmt.Println(res, err)
-	res1 := d.Yesno()
-	x := godialog.LastCMD
-	fmt.Println("%v", x)
-	fmt.Println("%v", res1)
+func tearDown() {
+	LastCMD = []string{}
+}
+
+func TestYesNo(t *testing.T) {
+	d := NewTestDialog(DIALOG_TEST_ENV, 0)
+	d.Yesno()
+	x := LastCMD
+	expected_str := "[ --no-shadow --yesno  0 0 --attach 0]"
+
+	if fmt.Sprintf("%v", x) != expected_str {
+		t.Errorf("Expected %v, actual %v ", expected_str, x)
+	}
+
+}
+
+func TestHelpButtonTrue(t *testing.T) {
+	d := NewTestDialogRAW(DIALOG_TEST_ENV, 0)
+	expected_val := true
+	d.HelpButton(expected_val)
+
+	if d.helpButton != expected_val {
+		t.Errorf("Expected %v, actual %v ", expected_val, d.helpButton)
+	}
+	x := LastCMD
+	fmt.Sprintf("%v \n", LastCMD)
+	expected_str := "[]"
+	if fmt.Sprintf("%v", x) != expected_str {
+		t.Errorf("Expected %v, actual %v ", expected_str, x)
+	}
+}
+
+func TestHelpButtonFalse(t *testing.T) {
+	d := NewTestDialogRAW(DIALOG_TEST_ENV, 0)
+	expected_val := false
+	d.HelpButton(expected_val)
+
+	if d.helpButton != expected_val {
+		t.Errorf("Expected %v, actual %v ", expected_val, d.helpButton)
+	}
+	x := LastCMD
+	fmt.Sprintf("%v \n", LastCMD)
+	expected_str := "[]"
+	if fmt.Sprintf("%v", x) != expected_str {
+		t.Errorf("Expected %v, actual %v ", expected_str, x)
+	}
 }
