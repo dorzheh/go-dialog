@@ -37,7 +37,7 @@ func NewTestDialog(environment string, parentId int) dialog.DialogIface {
 
 	// res.parentId = parentId
 	// res.reset()
-	return &res
+	return res
 }
 
 func TestInfoBox(t *testing.T) {
