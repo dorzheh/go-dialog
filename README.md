@@ -5,6 +5,7 @@ go-dialog is a Go wrapper for the dialog utility originally written by Savio Lam
 
 Usage
 =========
+```go
 package main
 
 import (
@@ -15,7 +16,7 @@ func main() {
    d := dialog.New(dialog.AUTO, 0)
    d.Msgbox("Hello world!")
 }
-
+```
 
 Installation
 =========
