@@ -203,7 +203,7 @@ func (d *Dialog) exec(dType string, allowLabel bool) (string, error) {
 	var out bytes.Buffer
 	cmd.Stdout = &out
 	var err error
-	if res.environment != DIALOG_TEST_ENV {
+	if d.environment != DIALOG_TEST_ENV {
 		err = cmd.Run()
 	}
 	d.lastCmd = cmd.Args
