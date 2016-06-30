@@ -57,8 +57,8 @@ type Dialog struct {
 	lastCmd     []string
 }
 
-//func New(environment string, parentId int) *Dialog {
-func New(environment string, parentId int) DialogIface {
+func New(environment string, parentId int) *Dialog {
+
 	var err error
 	var res = new(Dialog)
 	if environment == AUTO || environment == "" {
@@ -88,6 +88,10 @@ func New(environment string, parentId int) DialogIface {
 	res.parentId = parentId
 	res.reset()
 	return res
+}
+
+func NewDialogWithIface(environment string, parentId int) DialogIface {
+	return New(environment, parentId)
 }
 
 func (d *Dialog) Shadow(truefalse bool) {
