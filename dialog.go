@@ -72,7 +72,7 @@ func New(environment string, parentId int) *Dialog {
 		if res.environment == "" {
 			fmt.Println("Package not found!\nPlease install " + KDE + " or " + GTK + " or " + X + " or " + CONSOLE)
 		}
-	} else if res.environment == DIALOG_TEST_ENV {
+	} else if environment == DIALOG_TEST_ENV {
 		res.environment = DIALOG_TEST_ENV
 	} else {
 		_, err = exec.LookPath(environment)
