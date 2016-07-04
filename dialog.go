@@ -38,27 +38,7 @@ var AllCMD []string
 var Test_e error
 
 type Dialog struct {
-	environment string
-	parentId    int
-	title       string
-	backtitle   string
-	label       string
-	height      int
-	width       int
-	left        int
-	top         int
-	shadow      bool
-	helpButton  bool
-	helpLabel   string
-	extraLabel  string
-	cancelLabel string
-	okLabel     string
-	beforeDtype []string
-	beforeSize  []string
-	afterSize   []string
-	lastCmd     []string
-	exec_error  error
-	exec_output string
+	BaseDialog
 }
 
 func New(environment string, parentId int) *Dialog {
