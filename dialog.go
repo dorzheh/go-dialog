@@ -35,6 +35,8 @@ const (
 var LastCMD []string
 var AllCMD []string
 
+var Test_e error
+
 type Dialog struct {
 	environment string
 	parentId    int
@@ -55,6 +57,8 @@ type Dialog struct {
 	beforeSize  []string
 	afterSize   []string
 	lastCmd     []string
+	exec_error  error
+	exec_output string
 }
 
 func New(environment string, parentId int) *Dialog {
@@ -153,6 +157,8 @@ func (d *Dialog) reset() {
 	d.beforeDtype = []string{}
 	d.afterSize = []string{}
 	d.beforeSize = []string{}
+	d.exec_error = nil
+	d.exec_output = ""
 }
 
 func (d *Dialog) exec(dType string, allowLabel bool) (string, error) {
@@ -215,11 +221,21 @@ func (d *Dialog) exec(dType string, allowLabel bool) (string, error) {
 	if d.environment != DIALOG_TEST_ENV {
 		err = cmd.Run()
 	}
+	var return_string string
+	switch d.environment {
+	case DIALOG_TEST_ENV:
+		err = d.exec_error
+		return_string = d.exec_output
+	default:
+		err = cmd.Run()
+		return_string = strings.Trim(out.String(), "\r\n ")
+	}
+
 	d.lastCmd = cmd.Args
 	LastCMD = cmd.Args
-
 	d.reset()
-	return strings.Trim(out.String(), "\r\n "), err
+	//return strings.Trim(out.String(), "\r\n "), err
+	return return_string, err
 }
 
 func (d *Dialog) Slider(min int, max int, step int) (int, error) {
@@ -408,6 +424,7 @@ func (d *Dialog) Timebox(date time.Time) (string, error) {
 
 func (d *Dialog) Yesno() bool {
 	if _, err := d.exec("yesno", true); err != nil {
+		Test_e = err
 		if err.Error() == DIALOG_ERR_CANCEL {
 			return false
 		}
