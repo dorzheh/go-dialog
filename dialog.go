@@ -212,7 +212,7 @@ func (d *Dialog) exec(dType string, allowLabel bool) (string, error) {
 		return_string = d.exec_output
 	default:
 		i := 0
-		if d.catch_exitcode255 {
+		if !d.catch_exitcode255 {
 			i = 100
 		}
 
@@ -224,7 +224,6 @@ func (d *Dialog) exec(dType string, allowLabel bool) (string, error) {
 			}
 			if err != nil {
 				if err.Error() == DIALOG_ERR_255 {
-
 					continue
 				}
 			}
