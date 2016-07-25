@@ -211,7 +211,25 @@ func (d *Dialog) exec(dType string, allowLabel bool) (string, error) {
 		err = d.exec_error
 		return_string = d.exec_output
 	default:
-		err = cmd.Run()
+		i := 0
+		if d.catch_exitcode255 {
+			i = 100
+		}
+
+		for {
+			i++
+			err = cmd.Run()
+			if i > 2 {
+				break
+			}
+			if err != nil {
+				if err.Error() == DIALOG_ERR_255 {
+
+					continue
+				}
+			}
+			break
+		}
 		return_string = strings.Trim(out.String(), "\r\n ")
 	}
 
@@ -360,41 +378,7 @@ func (d *Dialog) Menu(menuHeight int, tagItem ...string) (string, error) {
 	for _, param := range tagItem {
 		d.afterSize = append(d.afterSize, param)
 	}
-
-	if !d.catch_exitcode255 {
-		return d.exec("menu", true)
-	}
-
-	// avoid 255 exit code
-	var err error
-	var result string
-	i := 0
-
-	for {
-		i++
-		if i > 2 {
-			break
-		}
-		result, err = d.exec("menu", true)
-
-		if err != nil {
-			if err.Error() == DIALOG_ERR_255 {
-
-				// fmt.Println("err.Error():")
-				// fmt.Println(err.Error())
-				// fmt.Println(d.catch_exitcode255)
-				// os.Exit(0)
-				continue
-			}
-		}
-		break
-
-	}
-	fmt.Println("i:")
-	fmt.Println(i)
-	// fmt.Println(d.catch_exitcode255)
-	os.Exit(0)
-	return result, err
+	return d.exec("menu", true)
 
 }
 
