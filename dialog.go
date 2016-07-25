@@ -229,17 +229,14 @@ func (d *Dialog) exec(dType string, allowLabel bool) (string, error) {
 			break
 		default:
 			err = cmd.Run()
-
 			if err != nil {
-				if err.Error() == DIALOG_ERR_255 {
+				if err.Error() == DIALOG_ERR_255 && i < 3 {
 					continue
 				}
 			}
-			break
+
 		}
-		if i > 2 {
-			break
-		}
+		break
 	}
 	return_string = strings.Trim(out.String(), "\r\n ")
 	d.lastCmd = cmd.Args
