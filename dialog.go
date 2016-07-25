@@ -375,6 +375,7 @@ Loop:
 		result, err = d.exec("menu", true)
 
 		if err != nil {
+			fmt.Println("err.Error():")
 			fmt.Println(err.Error())
 			fmt.Println(d.catch_exitcode255)
 			os.Exit(0)
