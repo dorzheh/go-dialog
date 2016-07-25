@@ -219,19 +219,17 @@ func (d *Dialog) exec(dType string, allowLabel bool) (string, error) {
 	for {
 		i++
 
+		cmd = d.GetCmd(dType, allowLabel)
+		cmd.Stdout = &out
+
 		switch d.environment {
 		case DIALOG_TEST_ENV:
 			err = d.exec_error
 			return_string = d.exec_output
+			break
 		default:
-
-			cmd = d.GetCmd(dType, allowLabel)
-			cmd.Stdout = &out
-
 			err = cmd.Run()
-			if i > 2 {
-				break
-			}
+
 			if err != nil {
 				if err.Error() == DIALOG_ERR_255 {
 					continue
@@ -239,9 +237,11 @@ func (d *Dialog) exec(dType string, allowLabel bool) (string, error) {
 			}
 			break
 		}
-		return_string = strings.Trim(out.String(), "\r\n ")
+		if i > 2 {
+			break
+		}
 	}
-
+	return_string = strings.Trim(out.String(), "\r\n ")
 	d.lastCmd = cmd.Args
 	LastCMD = cmd.Args
 	// fmt.Println(LastCMD)
