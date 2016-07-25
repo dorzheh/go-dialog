@@ -143,7 +143,7 @@ func (d *Dialog) reset() {
 	d.catch_exitcode255 = false
 }
 
-func (d *Dialog) exec(dType string, allowLabel bool) (string, error) {
+func (d *Dialog) GetCmd(dType string, allowLabel bool) *Cmd {
 	var arg string
 	cmd := exec.Command(d.environment)
 
@@ -197,8 +197,15 @@ func (d *Dialog) exec(dType string, allowLabel bool) (string, error) {
 		cmd.Args = append(cmd.Args, strconv.Itoa(d.parentId))
 	}
 
+	return cmd
+
+}
+
+func (d *Dialog) exec(dType string, allowLabel bool) (string, error) {
+
+	var cmd *Cmd
 	var out bytes.Buffer
-	cmd.Stdout = &out
+
 	var err error
 	// if d.environment != DIALOG_TEST_ENV {
 	// err = cmd.Run()
@@ -218,6 +225,10 @@ func (d *Dialog) exec(dType string, allowLabel bool) (string, error) {
 
 		for {
 			i++
+
+			cmd = d.GetCmd(dType, allowLabel)
+			cmd.Stdout = &out
+
 			err = cmd.Run()
 			if i > 2 {
 				break
