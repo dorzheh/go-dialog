@@ -369,7 +369,7 @@ func (d *Dialog) Menu(menuHeight int, tagItem ...string) (string, error) {
 	var err error
 	var result string
 	i := 0
-Loop:
+
 	for {
 		i++
 		if i > 2 {
@@ -388,7 +388,7 @@ Loop:
 		}
 
 		if err != fmt.Errorf(DIALOG_ERR_255) {
-			break Loop
+			break
 		}
 
 	}
