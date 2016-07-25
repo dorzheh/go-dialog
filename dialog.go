@@ -211,20 +211,19 @@ func (d *Dialog) exec(dType string, allowLabel bool) (string, error) {
 	// err = cmd.Run()
 	// }
 	var return_string string
-	// fmt.Println(cmd.Args)
-	// return return_string, err
-	switch d.environment {
-	case DIALOG_TEST_ENV:
-		err = d.exec_error
-		return_string = d.exec_output
-	default:
-		i := 0
-		if !d.catch_exitcode255 {
-			i = 100
-		}
+	i := 0
+	if !d.catch_exitcode255 {
+		i = 100
+	}
 
-		for {
-			i++
+	for {
+		i++
+
+		switch d.environment {
+		case DIALOG_TEST_ENV:
+			err = d.exec_error
+			return_string = d.exec_output
+		default:
 
 			cmd = d.GetCmd(dType, allowLabel)
 			cmd.Stdout = &out
