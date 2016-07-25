@@ -379,11 +379,12 @@ func (d *Dialog) Menu(menuHeight int, tagItem ...string) (string, error) {
 
 		if err != nil {
 			if err.Error() == DIALOG_ERR_255 {
+
+				fmt.Println("err.Error():")
+				fmt.Println(err.Error())
+				fmt.Println(d.catch_exitcode255)
+				os.Exit(0)
 				continue
-				// fmt.Println("err.Error():")
-				// fmt.Println(err.Error())
-				// fmt.Println(d.catch_exitcode255)
-				// os.Exit(0)
 			}
 		}
 		break
