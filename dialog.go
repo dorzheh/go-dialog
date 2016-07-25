@@ -143,7 +143,7 @@ func (d *Dialog) reset() {
 	d.catch_exitcode255 = false
 }
 
-func (d *Dialog) GetCmd(dType string, allowLabel bool) *Cmd {
+func (d *Dialog) GetCmd(dType string, allowLabel bool) *exec.Cmd {
 	var arg string
 	cmd := exec.Command(d.environment)
 
@@ -203,7 +203,7 @@ func (d *Dialog) GetCmd(dType string, allowLabel bool) *Cmd {
 
 func (d *Dialog) exec(dType string, allowLabel bool) (string, error) {
 
-	var cmd *Cmd
+	var cmd *exec.Cmd
 	var out bytes.Buffer
 
 	var err error
