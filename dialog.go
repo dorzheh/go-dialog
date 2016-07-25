@@ -360,11 +360,12 @@ func (d *Dialog) Menu(menuHeight int, tagItem ...string) (string, error) {
 	for _, param := range tagItem {
 		d.afterSize = append(d.afterSize, param)
 	}
-	fmt.Println(d.catch_exitcode255)
-	os.Exit(0)
+
 	if !d.catch_exitcode255 {
 		return d.exec("menu", true)
 	}
+	fmt.Println(d.catch_exitcode255)
+	os.Exit(0)
 	// avoid 255 exit code
 	var err error
 	var result string
