@@ -139,6 +139,7 @@ func (d *Dialog) reset() {
 	d.beforeSize = []string{}
 	d.exec_error = nil
 	d.exec_output = ""
+	d.catch_exitcode255 = false
 }
 
 func (d *Dialog) exec(dType string, allowLabel bool) (string, error) {
@@ -198,10 +199,12 @@ func (d *Dialog) exec(dType string, allowLabel bool) (string, error) {
 	var out bytes.Buffer
 	cmd.Stdout = &out
 	var err error
-	if d.environment != DIALOG_TEST_ENV {
-		err = cmd.Run()
-	}
+	// if d.environment != DIALOG_TEST_ENV {
+	// 	err = cmd.Run()
+	// }
 	var return_string string
+	// fmt.Println(cmd.Args)
+	// return return_string, err
 	switch d.environment {
 	case DIALOG_TEST_ENV:
 		err = d.exec_error
@@ -213,6 +216,7 @@ func (d *Dialog) exec(dType string, allowLabel bool) (string, error) {
 
 	d.lastCmd = cmd.Args
 	LastCMD = cmd.Args
+	fmt.Println(LastCMD)
 	d.reset()
 	//return strings.Trim(out.String(), "\r\n "), err
 	return return_string, err
