@@ -230,7 +230,7 @@ func (d *Dialog) exec(dType string, allowLabel bool) (string, error) {
 		default:
 			err = cmd.Run()
 			if err != nil {
-				if err.Error() == DIALOG_ERR_255 && i < 3 {
+				if err.Error() == DIALOG_ERR_255 && i < 5 {
 					continue
 				}
 			}
