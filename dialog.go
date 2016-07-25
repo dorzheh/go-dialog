@@ -234,11 +234,12 @@ func (d *Dialog) exec(dType string, allowLabel bool) (string, error) {
 					continue
 				}
 			}
+			return_string = strings.Trim(out.String(), "\r\n ")
 
 		}
 		break
 	}
-	return_string = strings.Trim(out.String(), "\r\n ")
+
 	d.lastCmd = cmd.Args
 	LastCMD = cmd.Args
 	// fmt.Println(LastCMD)
