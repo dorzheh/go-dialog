@@ -364,8 +364,7 @@ func (d *Dialog) Menu(menuHeight int, tagItem ...string) (string, error) {
 	if !d.catch_exitcode255 {
 		return d.exec("menu", true)
 	}
-	fmt.Println(d.catch_exitcode255)
-	os.Exit(0)
+
 	// avoid 255 exit code
 	var err error
 	var result string
@@ -374,6 +373,13 @@ Loop:
 	for {
 		i++
 		result, err = d.exec("menu", true)
+
+		if err != nil {
+			fmt.Println(err.Error())
+			fmt.Println(d.catch_exitcode255)
+			os.Exit(0)
+		}
+
 		if err != fmt.Errorf(DIALOG_ERR_255) {
 			break Loop
 		}
