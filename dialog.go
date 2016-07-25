@@ -351,6 +351,10 @@ func (d *Dialog) Inputmenu(menuHeight int, tagItem ...string) ([]string, error) 
 	return res, err
 }
 
+func (d *Dialog) EnableCatch255() {
+	d.catch_exitcode255 = true
+}
+
 func (d *Dialog) Menu(menuHeight int, tagItem ...string) (string, error) {
 	d.afterSize = append(d.afterSize, strconv.Itoa(menuHeight))
 	for _, param := range tagItem {
