@@ -30,6 +30,7 @@ const (
 	DIALOG_ERR_CANCEL = "exit status 1"
 	DIALOG_ERR_HELP   = "exit status 2"
 	DIALOG_ERR_EXTRA  = "exit status 3"
+	DIALOG_ERR_255    = "exit status 255"
 )
 
 var LastCMD []string
@@ -200,7 +201,7 @@ func (d *Dialog) exec(dType string, allowLabel bool) (string, error) {
 	cmd.Stdout = &out
 	var err error
 	// if d.environment != DIALOG_TEST_ENV {
-	// 	err = cmd.Run()
+	// err = cmd.Run()
 	// }
 	var return_string string
 	// fmt.Println(cmd.Args)
@@ -216,7 +217,7 @@ func (d *Dialog) exec(dType string, allowLabel bool) (string, error) {
 
 	d.lastCmd = cmd.Args
 	LastCMD = cmd.Args
-	fmt.Println(LastCMD)
+	// fmt.Println(LastCMD)
 	d.reset()
 	//return strings.Trim(out.String(), "\r\n "), err
 	return return_string, err
@@ -355,7 +356,27 @@ func (d *Dialog) Menu(menuHeight int, tagItem ...string) (string, error) {
 	for _, param := range tagItem {
 		d.afterSize = append(d.afterSize, param)
 	}
-	return d.exec("menu", true)
+	if !d.catch_exitcode255 {
+		return d.exec("menu", true)
+	}
+	// avoid 255 exit code
+	var err error
+	var result string
+	i := 0
+Loop:
+	for {
+		i++
+		result, err = d.exec("menu", true)
+		if err != fmt.Errorf(DIALOG_ERR_255) {
+			break Loop
+		}
+		if i > 2 {
+			break Loop
+		}
+
+	}
+	return result, err
+
 }
 
 func (d *Dialog) Msgbox(text string) {
