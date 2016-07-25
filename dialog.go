@@ -386,10 +386,7 @@ func (d *Dialog) Menu(menuHeight int, tagItem ...string) (string, error) {
 				// os.Exit(0)
 			}
 		}
-
-		if err != fmt.Errorf(DIALOG_ERR_255) {
-			break
-		}
+		break
 
 	}
 	return result, err
