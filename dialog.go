@@ -375,10 +375,12 @@ Loop:
 		result, err = d.exec("menu", true)
 
 		if err != nil {
-			fmt.Println("err.Error():")
-			fmt.Println(err.Error())
-			fmt.Println(d.catch_exitcode255)
-			os.Exit(0)
+			if err.Error() == DIALOG_ERR_255 {
+				fmt.Println("err.Error():")
+				fmt.Println(err.Error())
+				fmt.Println(d.catch_exitcode255)
+				os.Exit(0)
+			}
 		}
 
 		if err != fmt.Errorf(DIALOG_ERR_255) {
