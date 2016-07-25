@@ -373,7 +373,7 @@ func (d *Dialog) Menu(menuHeight int, tagItem ...string) (string, error) {
 	for {
 		i++
 		if i > 2 {
-			break Loop
+			break
 		}
 		result, err = d.exec("menu", true)
 
