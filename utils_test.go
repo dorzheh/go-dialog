@@ -5,7 +5,7 @@ package dialog
 
 import (
 	// 	// "bytes"
-	// "fmt"
+	"fmt"
 	"os"
 	"os/exec"
 	"testing"
@@ -23,40 +23,38 @@ import (
 
 // }
 
-// func TestDialogFindPathOrExit(t *testing.T) {
-// 	fixtures := []struct {
-// 		Env string
-// 	}{
-// 		{Env: CONSOLE},
-// 	}
+func TestGetPathOeRaiseError(t *testing.T) {
+	fixtures := []struct {
+		Env string
+		Err error
+	}{
+		{Env: CONSOLE, Err: fmt.Errorf("Package not found!\nPlease install " + CONSOLE)},
+		{Env: X, Err: fmt.Errorf("Package not found!\nPlease install " + X)},
+		{Env: KDE, Err: fmt.Errorf("Package not found!\nPlease install " + KDE)},
+		{Env: GTK, Err: fmt.Errorf("Package not found!\nPlease install " + GTK)},
+		{Env: DIALOG_TEST_ENV, Err: nil},
+		{Env: AUTO, Err: fmt.Errorf(DIALOG_PACKAGE_AUTO_NOT_FOUND)},
+	}
 
-// 	if len(fixtures) < 1 {
-// 		t.Fatalf("Failed because you should have test cases")
-// 	}
+	if len(fixtures) < 1 {
+		t.Fatalf("Failed because you should have test cases")
+	}
+	os.Setenv("PATH", "")
+	for _, tt := range fixtures {
 
-// 	for _, tt := range fixtures {
+		err := getPathOeRaiseError(tt.Env)
+		if err != nil && tt.Err != nil {
+			if err.Error() != tt.Err.Error() {
+				t.Fatalf("%v !+ expected  %v", err.Error(), tt.Err.Error())
+			}
+		} else if err != nil && tt.Err == nil {
+			t.Fatalf("%v !+ expected  %v", err.Error(), nil)
+		} else if err == nil && tt.Err != nil {
+			t.Fatalf("%v !+ expected  %v", nil, tt.Err.Error())
+		}
 
-// 		os.Setenv("PATH", "")
-// 		os.Setenv("BE_CRASHER", "")
-// 		cmd := exec.Command(os.Args[0], "-test.run=RunDialogFindPathOrExit")
-// 		// t.Fatalf(cmd.Path)
-// 		// cmd.Path = ""
-// 		env_str := "BE_CRASHER=" + tt.Env
-// 		cmd.Env = append(os.Environ(), env_str)
-// 		err := cmd.Run()
-// 		// bs, err := cmd.CombinedOutput()
-// 		// t.Log(bs)
-// 		// t.Log(err)
-// 		e, ok := err.(*exec.ExitError)
-
-// 		if ok && !e.Success() {
-// 			t.Log(e.String())
-// 			return
-// 		}
-
-// 		t.Fatalf("process ran with err %v , want exit status 1", err)
-// 	}
-// }
+	}
+}
 
 func TestDialogFindPathOrExitConsole(t *testing.T) {
 	if os.Getenv("BE_CRASHER") == "TestDialogFindPathOrExitConsole" {
