@@ -2,7 +2,13 @@ language: go
 
 go:
   - 1.5
-#  - 1.6
+  - 1.6
+  - tip
+  
+before_install:
+  - go get github.com/axw/gocov/gocov
+  - go get github.com/mattn/goveralls
+  - if ! go get code.google.com/p/go.tools/cmd/cover; then go get golang.org/x/tools/cmd/cover; fi
 install:
 # Add Godeps dependencies to GOPATH and PATH
 #  - go get github.com/tools/godep
@@ -24,6 +30,7 @@ branches:
 #  - docker
 #script: go test ./...
 script:
+   - $HOME/gopath/bin/goveralls -service=travis-ci -repotoken=$COVERALLS
    - go test ./...
 #  - go build -o example_bin example/myproduct/deployer/deployer.go
 

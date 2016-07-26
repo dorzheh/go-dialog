@@ -1,4 +1,5 @@
 [![Build Status](https://travis-ci.org/weldpua2008/go-dialog.svg?branch=master)](https://travis-ci.org/weldpua2008/go-dialog)
+[![Coverage Status](https://coveralls.io/repos/github/weldpua2008/go-dialog/badge.svg?branch=master)](https://coveralls.io/github/weldpua2008/go-dialog?branch=master)
 
 go-dialog
 =========
