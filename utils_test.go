@@ -45,6 +45,8 @@ func TestGetPathOeRaiseError(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
+	// clean up
+	defer os.RemoveAll(dir)
 
 	for _, tt := range fixtures {
 		os.Setenv("PATH", "")
