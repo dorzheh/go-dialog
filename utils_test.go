@@ -6,6 +6,7 @@ package dialog
 import (
 	// 	// "bytes"
 	"fmt"
+	"io/ioutil"
 	"os"
 	"os/exec"
 	"testing"
@@ -39,9 +40,14 @@ func TestGetPathOeRaiseError(t *testing.T) {
 	if len(fixtures) < 1 {
 		t.Fatalf("Failed because you should have test cases")
 	}
-	os.Setenv("PATH", "")
-	for _, tt := range fixtures {
 
+	dir, err := ioutil.TempDir("", "TestGetPathOeRaiseError")
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	for _, tt := range fixtures {
+		os.Setenv("PATH", "")
 		err := getPathOeRaiseError(tt.Env)
 		if err != nil && tt.Err != nil {
 			if err.Error() != tt.Err.Error() {
@@ -51,6 +57,27 @@ func TestGetPathOeRaiseError(t *testing.T) {
 			t.Fatalf("%v !+ expected  %v", err.Error(), nil)
 		} else if err == nil && tt.Err != nil {
 			t.Fatalf("%v !+ expected  %v", nil, tt.Err.Error())
+		}
+
+		// test the search
+		tmpfile, err_f := ioutil.TempFile("", "")
+		if err_f != nil {
+			t.Fatal(err_f)
+		}
+
+		newPath := dir + string(os.PathSeparator) + tt.Env
+		err_f = os.Rename(tmpfile.Name(), newPath)
+		if err_f != nil {
+			defer os.Remove(tmpfile.Name())
+			t.Fatal(err_f)
+		}
+		defer os.Remove(newPath)
+		os.Setenv("PATH", dir)
+		os.Chmod(newPath, 0777)
+		err = getPathOeRaiseError(tt.Env)
+		if err != nil {
+			// t.Log(newPath)
+			t.Logf(err.Error())
 		}
 
 	}
