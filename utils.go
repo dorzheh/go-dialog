@@ -16,10 +16,10 @@ import (
 
 func DialogFindPathOrExit(environment string) {
 	var err error
+	// fmt.Println(environment)
 	switch environment {
 	case CONSOLE, KDE, GTK, X:
-
-		_, err = exec.LookPath(CONSOLE)
+		_, err = exec.LookPath(environment)
 		if err != nil {
 			fmt.Println("Package not found!\nPlease install " + environment)
 			os.Exit(1)
@@ -37,5 +37,10 @@ func DialogFindPathOrExit(environment string) {
 			fmt.Println("Package not found!\nPlease install " + KDE + " or " + GTK + " or " + X + " or " + CONSOLE)
 			os.Exit(1)
 		}
+	case DIALOG_TEST_ENV:
+		break
+	default:
+		fmt.Println("Unknown package " + environment)
+		os.Exit(126)
 	}
 }

@@ -63,7 +63,6 @@ type DialogFactory struct {
 }
 
 func (self *DialogFactory) GetDialog(environment string, parentId int) DialogIface {
-
 	var res = new(Dialog)
 	// var err error
 	switch environment {
