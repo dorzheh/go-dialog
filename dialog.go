@@ -27,10 +27,11 @@ const (
 )
 
 const (
-	DIALOG_ERR_CANCEL = "exit status 1"
-	DIALOG_ERR_HELP   = "exit status 2"
-	DIALOG_ERR_EXTRA  = "exit status 3"
-	DIALOG_ERR_255    = "exit status 255"
+	DIALOG_ERR_CANCEL        = "exit status 1"
+	DIALOG_ERR_HELP          = "exit status 2"
+	DIALOG_ERR_EXTRA         = "exit status 3"
+	DIALOG_ERR_255           = "exit status 255"
+	NUMBER_OF_CATCH255_TRIES = 512
 )
 
 var LastCMD []string
@@ -213,7 +214,7 @@ func (d *Dialog) exec(dType string, allowLabel bool) (string, error) {
 	var return_string string
 	i := 0
 	if !d.catch_exitcode255 {
-		i = 100
+		i = 100 + NUMBER_OF_CATCH255_TRIES
 	}
 
 	for {
@@ -230,7 +231,7 @@ func (d *Dialog) exec(dType string, allowLabel bool) (string, error) {
 		default:
 			err = cmd.Run()
 			if err != nil {
-				if err.Error() == DIALOG_ERR_255 && i < 5 {
+				if err.Error() == DIALOG_ERR_255 && i < NUMBER_OF_CATCH255_TRIES {
 					continue
 				}
 			}
@@ -315,6 +316,7 @@ func (d *Dialog) Checklist(listHeight int, tagItemStatus ...string) ([]string, e
 }
 
 func (d *Dialog) Mixedform(title string, insecure bool, tagItemStatus ...string) ([]string, error) {
+	d.EnableCatch255()
 	var list []string
 	d.afterSize = append(d.afterSize, "0")
 	for _, param := range tagItemStatus {
@@ -332,6 +334,7 @@ func (d *Dialog) Mixedform(title string, insecure bool, tagItemStatus ...string)
 }
 
 func (d *Dialog) Fselect(filepath string) (string, error) {
+	d.EnableCatch255()
 	d.beforeSize = append(d.beforeSize, filepath)
 	var command string
 	if d.environment == KDE {
@@ -354,11 +357,13 @@ func (d *Dialog) Infobox(text string) {
 }
 
 func (d *Dialog) Inputbox(value string) (string, error) {
+	d.EnableCatch255()
 	d.afterSize = append(d.afterSize, value)
 	return d.exec("inputbox", true)
 }
 
 func (d *Dialog) Inputmenu(menuHeight int, tagItem ...string) ([]string, error) {
+	d.EnableCatch255()
 	d.afterSize = append(d.afterSize, strconv.Itoa(menuHeight))
 	for _, param := range tagItem {
 		d.afterSize = append(d.afterSize, param)
@@ -381,6 +386,7 @@ func (d *Dialog) EnableCatch255() {
 }
 
 func (d *Dialog) Menu(menuHeight int, tagItem ...string) (string, error) {
+	d.EnableCatch255()
 	d.afterSize = append(d.afterSize, strconv.Itoa(menuHeight))
 	for _, param := range tagItem {
 		d.afterSize = append(d.afterSize, param)
@@ -395,6 +401,7 @@ func (d *Dialog) Msgbox(text string) {
 }
 
 func (d *Dialog) Passwordbox(insecure bool) (string, error) {
+	d.EnableCatch255()
 	var command string
 	if d.environment == KDE {
 		command = "password"
@@ -438,6 +445,7 @@ func (d *Dialog) Timebox(date time.Time) (string, error) {
 }
 
 func (d *Dialog) Yesno() bool {
+	d.EnableCatch255()
 	if _, err := d.exec("yesno", true); err != nil {
 		Test_e = err
 		if err.Error() == DIALOG_ERR_CANCEL {
@@ -448,6 +456,7 @@ func (d *Dialog) Yesno() bool {
 }
 
 func (d *Dialog) Radiolist(listHeight int, tagItemStatus ...string) (string, error) {
+
 	d.afterSize = append(d.afterSize, strconv.Itoa(listHeight))
 	for _, param := range tagItemStatus {
 		d.afterSize = append(d.afterSize, param)
@@ -458,6 +467,7 @@ func (d *Dialog) Radiolist(listHeight int, tagItemStatus ...string) (string, err
 }
 
 func (d *Dialog) Dselect(dirpath string) (string, error) {
+	d.EnableCatch255()
 	d.beforeSize = append(d.beforeSize, dirpath)
 	var command string
 	if d.environment == KDE {

@@ -16,12 +16,66 @@ import (
 // --textbox /opt/rdwr/dfcc/bin/1  20 80
 
 func main() {
+	// ============ a menu example ========= //
+	// d := dialog.New(dialog.AUTO, 0)
+	// list := make([]string, 0)
+	// list = append(list, "1", "2")
+	// d.EnableCatch255()
+	// d.SetTitle("title")
+	// d.SetBackTitle("backtitle")
+	// res, err := d.Menu(len(list), list[0:]...)
+	// fmt.Println(res)
+	// if err != nil {
+    // 		fmt.Println(err.Error())
+	// }
+
+	// ============ a Inputbox example ========= //
+	// d := dialog.New(dialog.AUTO, 0)
+	
+	// d.SetSize(8, 20)
+	// d.SetTitle("title")
+	// d.HelpButton(true)
+	// d.SetHelpLabel("helpButtonLabel")
+	// d.SetExtraLabel("extraButtonLabe")
+	// ipAddr, err := d.Inputbox("")
+	// fmt.Println(err)
+	// fmt.Println(ipAddr)
+
+	// ============ a Yesno example ========= //
+	// d := dialog.New(dialog.AUTO, 0)
+	// res := d.Yesno()
+	// fmt.Println(res)
+
+    // ============ a Dselect example ========= //
+	// d := dialog.New(dialog.AUTO, 0)
+
+	// d.SetSize(8, 50)
+	// d.SetTitle("title")
+	// d.HelpButton(true)
+	// d.SetHelpLabel("helpButtonLabel")
+	// d.SetExtraLabel("extraButtonLabe")
+	// ipAddr, err := d.Dselect("/tmp")
+	// fmt.Println(err)
+	// fmt.Println(ipAddr)
+
+	// ============ a Mixedform example ========= //
+	// d := dialog.New(dialog.AUTO, 0)
+
+	// d.HelpButton(true)
+	// d.SetHelpLabel("Back")
+	// l := []string{"Selection1", "1", "1", "2046", "1", "10", "20", "0", "0", "Selection2", "2", "1", "0", "2", "10", "20", "0", "0", "Selection3", "3", "1", "0", "3", "10", "20", "0", "0"}
+	// res, err := d.Mixedform("Title", false, l[0:]...)
+	// fmt.Println(res, err)
+
+
+	////////////////////// old stuff
 	// d := dialog.New(dialog.AUTO, 0)
 
 	// d.HelpButton(true)
 	// d.SetHelpLabel("Back")
 	// l := []string{"Selection1", "1", "1", "2046", "1", "10", "20", "0", "0", "Selection2", "2", "1", "0", "2", "10", "20", "0", "0", "Selection3", "3", "1", "0", "3", "10", "20", "0", "0"}
 	// res, err := d.Mixedform("Title", l[0:]...)
+	// fmt.Println(res, err)
 
 	// res, err := d.Calendar(time.Now())
 
