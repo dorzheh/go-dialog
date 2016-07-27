@@ -58,29 +58,28 @@ type DialogIface interface {
 	Progressbar() ProgressIface
 }
 
-// Fabric for Dialog
-type DialogFactory struct {
-}
+// // Fabric for Dialog
+// type DialogFactory struct {
+// }
 
-func (self *DialogFactory) GetDialog(environment string, parentId int) DialogIface {
-	var res = new(Dialog)
-	// var err error
-	switch environment {
-	case CONSOLE, KDE, GTK, X, AUTO:
-		DialogFindPathOrExit(environment)
-		res.environment = environment
-	case DIALOG_TEST_ENV:
-		if Debug {
-			log.Printf("using test env")
-		}
-	default:
-		if Debug {
-			log.Fatalln("Unknown environment: '" + environment + "'")
-		}
-		os.Exit(1)
-	}
+// func (self *DialogFactory) GetDialog(environment string, parentId int) DialogIface {
+// 	var res = new(Dialog)
+// 	DialogFindPathOrExit(environment)
+// 	switch environment {
+// 	case CONSOLE, KDE, GTK, X, AUTO:
+// 		res.environment = environment
+// 		// case DIALOG_TEST_ENV:
+// 		// 	if Debug {
+// 		// 		log.Printf("using test env")
+// 		// 	}
+// 		// default:
+// 		// 	if Debug {
+// 		// 		log.Fatalln("Unknown environment: '" + environment + "'")
+// 		// 	}
+// 		// 	os.Exit(1)
+// 	}
 
-	res.parentId = parentId
-	res.reset()
-	return res
-}
+// 	res.parentId = parentId
+// 	res.reset()
+// 	return res
+// }
