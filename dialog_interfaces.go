@@ -6,11 +6,11 @@ package dialog
 import (
 	// "bytes"
 	// "fmt"
-	"os"
+	// "os"
 	// "os/exec"
 	// "strconv"
 	// "strings"
-	"log"
+	// "log"
 	"time"
 )
 

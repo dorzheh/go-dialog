@@ -115,6 +115,14 @@ func (d *Dialog) SetOkLabel(label string) {
 	d.okLabel = label
 }
 
+func (d *Dialog) SetYesLabel(label string) {
+	d.yesLabel = label
+}
+
+func (d *Dialog) SetNOLabel(label string) {
+	d.noLabel = label
+}
+
 func (d *Dialog) HelpButton(truefalse bool) {
 	d.helpButton = truefalse
 }
@@ -132,6 +140,9 @@ func (d *Dialog) reset() {
 	d.backtitle = ""
 	d.label = ""
 	d.okLabel = "OK"
+	d.noLabel = ""
+	d.yesLabel = ""
+
 	d.extraLabel = ""
 	d.helpButton = false
 	d.helpLabel = ""
@@ -150,6 +161,14 @@ func (d *Dialog) GetCmd(dType string, allowLabel bool) *exec.Cmd {
 
 	if d.okLabel != "" {
 		cmd.Args = append(cmd.Args, "--ok-label", d.okLabel)
+	}
+
+	if d.yesLabel != "" {
+		cmd.Args = append(cmd.Args, "--yes-label", d.yesLabel)
+	}
+
+	if d.noLabel != "" {
+		cmd.Args = append(cmd.Args, "--no-label", d.noLabel)
 	}
 	if d.extraLabel != "" {
 		cmd.Args = append(cmd.Args, "--extra-button")

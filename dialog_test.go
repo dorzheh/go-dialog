@@ -306,6 +306,34 @@ func TestSetOkLabel(t *testing.T) {
 	}
 }
 
+func TestSetYesLabel(t *testing.T) {
+	d := NewTestDialogRAW(DIALOG_TEST_ENV, 0)
+
+	var tests = []string{"", "backtitle"}
+	for _, expected_val := range tests {
+
+		d.SetYesLabel(expected_val)
+
+		if d.yesLabel != expected_val {
+			t.Errorf("Expected %v, actual %v ", expected_val, d.yesLabel)
+		}
+	}
+}
+
+func TestSetNoLabel(t *testing.T) {
+	d := NewTestDialogRAW(DIALOG_TEST_ENV, 0)
+
+	var tests = []string{"", "backtitle"}
+	for _, expected_val := range tests {
+
+		d.SetNOLabel(expected_val)
+
+		if d.noLabel != expected_val {
+			t.Errorf("Expected %v, actual %v ", expected_val, d.noLabel)
+		}
+	}
+}
+
 func TestSetExtraLabel(t *testing.T) {
 	d := NewTestDialogRAW(DIALOG_TEST_ENV, 0)
 

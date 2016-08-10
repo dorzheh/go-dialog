@@ -19,6 +19,8 @@ type BaseDialog struct {
 	extraLabel        string
 	cancelLabel       string
 	okLabel           string
+	yesLabel          string
+	noLabel           string
 	beforeDtype       []string
 	beforeSize        []string
 	afterSize         []string
