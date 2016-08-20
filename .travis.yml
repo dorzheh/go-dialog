@@ -1,0 +1,41 @@
+language: go
+
+go:
+  - 1.5
+  - 1.6
+  - tip
+  
+before_install:
+  - go get github.com/axw/gocov/gocov
+  - go get github.com/mattn/goveralls
+  - if ! go get code.google.com/p/go.tools/cmd/cover; then go get golang.org/x/tools/cmd/cover; fi
+install:
+# Add Godeps dependencies to GOPATH and PATH
+#  - go get github.com/tools/godep
+#  - godep restore
+#  - go get -t -v ./...
+
+  -  go get "github.com/weldpua2008/go-dialog"
+#  - go get github.com/dorzheh/infra
+#env:
+#  #matrix:
+#  - OS_TYPE=opensuse OS_VERSION=13.2 ANSIBLE_VERSION=1.9.2
+
+branches:
+  only:
+  - master
+#  - stable
+
+#services:
+#  - docker
+#script: go test ./...
+script:
+   - $HOME/gopath/bin/goveralls -service=travis-ci -repotoken=$COVERALLS
+   - go test ./...
+#  - go build -o example_bin example/myproduct/deployer/deployer.go
+
+
+notifications:
+  email: false
+#  hipchat:
+#    rooms:

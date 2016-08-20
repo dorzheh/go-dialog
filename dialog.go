@@ -18,41 +18,33 @@ import (
 )
 
 const (
-	CONSOLE = "dialog"
-	KDE     = "kdialog"
-	GTK     = "gtkdialog"
-	X       = "Xdialog"
-	AUTO    = "auto"
+	CONSOLE         = "dialog"
+	KDE             = "kdialog"
+	GTK             = "gtkdialog"
+	X               = "Xdialog"
+	DIALOG_TEST_ENV = "test_env"
+	AUTO            = "auto"
 )
 
 const (
-	DIALOG_ERR_CANCEL = "exit status 1"
-	DIALOG_ERR_HELP   = "exit status 2"
-	DIALOG_ERR_EXTRA  = "exit status 3"
+	DIALOG_ERR_CANCEL        = "exit status 1"
+	DIALOG_ERR_HELP          = "exit status 2"
+	DIALOG_ERR_EXTRA         = "exit status 3"
+	DIALOG_ERR_255           = "exit status 255"
+	NUMBER_OF_CATCH255_TRIES = 512
 )
 
+var LastCMD []string
+var AllCMD []string
+
+var Test_e error
+
 type Dialog struct {
-	environment string
-	parentId    int
-	title       string
-	backtitle   string
-	label       string
-	height      int
-	width       int
-	left        int
-	top         int
-	shadow      bool
-	helpButton  bool
-	helpLabel   string
-	extraLabel  string
-	cancelLabel string
-	okLabel     string
-	beforeDtype []string
-	beforeSize  []string
-	afterSize   []string
+	BaseDialog
 }
 
 func New(environment string, parentId int) *Dialog {
+
 	var err error
 	var res = new(Dialog)
 	if environment == AUTO || environment == "" {
@@ -66,6 +58,8 @@ func New(environment string, parentId int) *Dialog {
 		if res.environment == "" {
 			fmt.Println("Package not found!\nPlease install " + KDE + " or " + GTK + " or " + X + " or " + CONSOLE)
 		}
+	} else if environment == DIALOG_TEST_ENV {
+		res.environment = DIALOG_TEST_ENV
 	} else {
 		_, err = exec.LookPath(environment)
 		if err == nil {
@@ -84,9 +78,17 @@ func New(environment string, parentId int) *Dialog {
 	return res
 }
 
+func NewDialogWithIface(environment string, parentId int) DialogIface {
+	return New(environment, parentId)
+}
+
 func (d *Dialog) Shadow(truefalse bool) {
 	d.shadow = truefalse
 }
+
+// func (d *Dialog) LastCMD() []string {
+// 	return d.lastCmd
+// }
 
 func (d *Dialog) SetCancelLabel(label string) {
 	d.cancelLabel = label
@@ -113,6 +115,14 @@ func (d *Dialog) SetOkLabel(label string) {
 	d.okLabel = label
 }
 
+func (d *Dialog) SetYesLabel(label string) {
+	d.yesLabel = label
+}
+
+func (d *Dialog) SetNOLabel(label string) {
+	d.noLabel = label
+}
+
 func (d *Dialog) HelpButton(truefalse bool) {
 	d.helpButton = truefalse
 }
@@ -130,6 +140,9 @@ func (d *Dialog) reset() {
 	d.backtitle = ""
 	d.label = ""
 	d.okLabel = "OK"
+	d.noLabel = ""
+	d.yesLabel = ""
+
 	d.extraLabel = ""
 	d.helpButton = false
 	d.helpLabel = ""
@@ -137,14 +150,25 @@ func (d *Dialog) reset() {
 	d.beforeDtype = []string{}
 	d.afterSize = []string{}
 	d.beforeSize = []string{}
+	d.exec_error = nil
+	d.exec_output = ""
+	d.catch_exitcode255 = false
 }
 
-func (d *Dialog) exec(dType string, allowLabel bool) (string, error) {
+func (d *Dialog) GetCmd(dType string, allowLabel bool) *exec.Cmd {
 	var arg string
 	cmd := exec.Command(d.environment)
 
 	if d.okLabel != "" {
 		cmd.Args = append(cmd.Args, "--ok-label", d.okLabel)
+	}
+
+	if d.yesLabel != "" {
+		cmd.Args = append(cmd.Args, "--yes-label", d.yesLabel)
+	}
+
+	if d.noLabel != "" {
+		cmd.Args = append(cmd.Args, "--no-label", d.noLabel)
 	}
 	if d.extraLabel != "" {
 		cmd.Args = append(cmd.Args, "--extra-button")
@@ -193,11 +217,55 @@ func (d *Dialog) exec(dType string, allowLabel bool) (string, error) {
 		cmd.Args = append(cmd.Args, strconv.Itoa(d.parentId))
 	}
 
+	return cmd
+
+}
+
+func (d *Dialog) exec(dType string, allowLabel bool) (string, error) {
+
+	var cmd *exec.Cmd
 	var out bytes.Buffer
-	cmd.Stdout = &out
-	err := cmd.Run()
+
+	var err error
+	// if d.environment != DIALOG_TEST_ENV {
+	// err = cmd.Run()
+	// }
+	var return_string string
+	i := 0
+	if !d.catch_exitcode255 {
+		i = 100 + NUMBER_OF_CATCH255_TRIES
+	}
+
+	for {
+		i++
+
+		cmd = d.GetCmd(dType, allowLabel)
+		cmd.Stdout = &out
+
+		switch d.environment {
+		case DIALOG_TEST_ENV:
+			err = d.exec_error
+			return_string = d.exec_output
+			break
+		default:
+			err = cmd.Run()
+			if err != nil {
+				if err.Error() == DIALOG_ERR_255 && i < NUMBER_OF_CATCH255_TRIES {
+					continue
+				}
+			}
+			return_string = strings.Trim(out.String(), "\r\n ")
+
+		}
+		break
+	}
+
+	d.lastCmd = cmd.Args
+	LastCMD = cmd.Args
+	// fmt.Println(LastCMD)
 	d.reset()
-	return strings.Trim(out.String(), "\r\n "), err
+	//return strings.Trim(out.String(), "\r\n "), err
+	return return_string, err
 }
 
 func (d *Dialog) Slider(min int, max int, step int) (int, error) {
@@ -267,6 +335,7 @@ func (d *Dialog) Checklist(listHeight int, tagItemStatus ...string) ([]string, e
 }
 
 func (d *Dialog) Mixedform(title string, insecure bool, tagItemStatus ...string) ([]string, error) {
+	d.EnableCatch255()
 	var list []string
 	d.afterSize = append(d.afterSize, "0")
 	for _, param := range tagItemStatus {
@@ -284,6 +353,7 @@ func (d *Dialog) Mixedform(title string, insecure bool, tagItemStatus ...string)
 }
 
 func (d *Dialog) Fselect(filepath string) (string, error) {
+	d.EnableCatch255()
 	d.beforeSize = append(d.beforeSize, filepath)
 	var command string
 	if d.environment == KDE {
@@ -306,11 +376,13 @@ func (d *Dialog) Infobox(text string) {
 }
 
 func (d *Dialog) Inputbox(value string) (string, error) {
+	d.EnableCatch255()
 	d.afterSize = append(d.afterSize, value)
 	return d.exec("inputbox", true)
 }
 
 func (d *Dialog) Inputmenu(menuHeight int, tagItem ...string) ([]string, error) {
+	d.EnableCatch255()
 	d.afterSize = append(d.afterSize, strconv.Itoa(menuHeight))
 	for _, param := range tagItem {
 		d.afterSize = append(d.afterSize, param)
@@ -328,12 +400,18 @@ func (d *Dialog) Inputmenu(menuHeight int, tagItem ...string) ([]string, error) 
 	return res, err
 }
 
+func (d *Dialog) EnableCatch255() {
+	d.catch_exitcode255 = true
+}
+
 func (d *Dialog) Menu(menuHeight int, tagItem ...string) (string, error) {
+	d.EnableCatch255()
 	d.afterSize = append(d.afterSize, strconv.Itoa(menuHeight))
 	for _, param := range tagItem {
 		d.afterSize = append(d.afterSize, param)
 	}
 	return d.exec("menu", true)
+
 }
 
 func (d *Dialog) Msgbox(text string) {
@@ -342,6 +420,7 @@ func (d *Dialog) Msgbox(text string) {
 }
 
 func (d *Dialog) Passwordbox(insecure bool) (string, error) {
+	d.EnableCatch255()
 	var command string
 	if d.environment == KDE {
 		command = "password"
@@ -385,7 +464,9 @@ func (d *Dialog) Timebox(date time.Time) (string, error) {
 }
 
 func (d *Dialog) Yesno() bool {
+	d.EnableCatch255()
 	if _, err := d.exec("yesno", true); err != nil {
+		Test_e = err
 		if err.Error() == DIALOG_ERR_CANCEL {
 			return false
 		}
@@ -394,6 +475,7 @@ func (d *Dialog) Yesno() bool {
 }
 
 func (d *Dialog) Radiolist(listHeight int, tagItemStatus ...string) (string, error) {
+
 	d.afterSize = append(d.afterSize, strconv.Itoa(listHeight))
 	for _, param := range tagItemStatus {
 		d.afterSize = append(d.afterSize, param)
@@ -404,6 +486,7 @@ func (d *Dialog) Radiolist(listHeight int, tagItemStatus ...string) (string, err
 }
 
 func (d *Dialog) Dselect(dirpath string) (string, error) {
+	d.EnableCatch255()
 	d.beforeSize = append(d.beforeSize, dirpath)
 	var command string
 	if d.environment == KDE {
@@ -423,7 +506,33 @@ type progress struct {
 	width       int
 }
 
-func (d *Dialog) Progressbar() *progress {
+// func (d *Dialog) Progressbar() *progress {
+// 	var out []byte
+// 	var id []string
+// 	if d.environment == KDE {
+// 		out, _ = exec.Command("kdialog", "--progressbar", "Initializing", "100", "--title", d.title).Output()
+// 		id = strings.Split(strings.Trim(string(out), " \n\r"), " ")
+// 	} else {
+// 		cmd := exec.Command(d.environment)
+// 		if d.shadow == false {
+// 			cmd.Args = append(cmd.Args, "--no-shadow")
+// 		}
+
+// 		cmd.Args = append(cmd.Args, "--title", d.title, "--gauge", d.label, strconv.Itoa(d.height), strconv.Itoa(d.width), "0", "--stdout")
+// 		cmd.Run()
+// 	}
+// 	var res = new(progress)
+// 	res.id = id
+// 	res.label = d.label
+// 	res.environment = d.environment
+// 	res.shadow = d.shadow
+// 	res.height = d.height
+// 	res.width = d.width
+// 	res.title = d.title
+// 	return res
+// }
+
+func (d *Dialog) Progressbar() ProgressIface {
 	var out []byte
 	var id []string
 	if d.environment == KDE {
